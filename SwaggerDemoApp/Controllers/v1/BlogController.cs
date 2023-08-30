@@ -9,6 +9,9 @@ namespace SwaggerDemoApp.Controllers.v1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
     public class BlogController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,6 +22,7 @@ namespace SwaggerDemoApp.Controllers.v1
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BlogDTO>))]
         public async Task<IActionResult> GetAllBlogs()
         {
             var response = await _mediator.Send(new GetAllBlogsQuery());
@@ -29,7 +33,8 @@ namespace SwaggerDemoApp.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePost(CreateOrUpdateBlogDTO dto)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        public async Task<IActionResult> CreateBlog([FromBody]CreateOrUpdateBlogDTO dto)
         {
             var response = await _mediator.Send(new CreateOrUpdateBlogCommand(dto));
 
